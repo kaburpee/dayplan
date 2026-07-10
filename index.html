@@ -1,428 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Trip Schedule Planner – Japan Trip</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-        :root {
-            --bg: #0f172a;
-            --bg-alt: #020617;
-            --card: #1e293b;
-            --accent: #38bdf8;
-            --accent-soft: rgba(56, 189, 248, 0.15);
-            --text: #e5e7eb;
-            --muted: #9ca3af;
-            --danger: #f97373;
-            --border: #334155;
-            --radius: 10px;
-            --shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
-        }
+  <meta charset="UTF-8" />
+  <title>Trip Schedule Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #020617;
+      --card: #0f172a;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+      --danger: #f97373;
+      --radius: 10px;
+    }
 
-        * { box-sizing: border-box; }
+    * { box-sizing: border-box; }
 
-        body {
-            margin: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-                "Segoe UI", sans-serif;
-            background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
 
-        .app-shell {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 24px 16px 40px;
-        }
+    .app {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 18px 12px 60px;
+    }
 
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 18px;
-        }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
 
-        header h1 {
-            font-size: 1.4rem;
-            letter-spacing: 0.03em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    header h1 {
+      font-size: 1.3rem;
+      letter-spacing: 0.04em;
+    }
 
-        header h1 span.logo-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 999px;
-            background: var(--accent);
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.9);
-        }
+    .status-pill {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.9);
+    }
 
-        header .status-pill {
-            font-size: 0.8rem;
-            padding: 4px 10px;
-            border-radius: 999px;
-            border: 1px solid var(--border);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(15, 23, 42, 0.9);
-        }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #f97373;
+      box-shadow: 0 0 10px rgba(249, 115, 115, 0.9);
+    }
 
-        header .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 999px;
-            background: #f97373;
-            box-shadow: 0 0 10px rgba(249, 115, 115, 0.9);
-        }
+    .card {
+      background: linear-gradient(145deg, #020617 0, #0f172a 40%, #020617 100%);
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 12px 12px 14px;
+      margin-bottom: 12px;
+    }
 
-        main {
-            display: grid;
-            grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
-            gap: 18px;
-        }
+    .card-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
 
-        @media (max-width: 800px) {
-            main { grid-template-columns: minmax(0, 1fr); }
-        }
+    input, textarea {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      padding: 6px 8px;
+      font-size: 0.85rem;
+      outline: none;
+    }
 
-        .card {
-            background: linear-gradient(145deg, #020617 0, #0f172a 40%, #020617 100%);
-            border-radius: var(--radius);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            box-shadow: var(--shadow);
-            padding: 14px 14px 16px;
-        }
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
+      background: rgba(15, 23, 42, 1);
+    }
 
-        .card-title {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--muted);
-            margin-bottom: 10px;
-        }
+    label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 3px;
+    }
 
-        .trip-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            max-height: 420px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
+    .field-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
 
-        .trip-item {
-            border-radius: 8px;
-            padding: 8px 9px;
-            border: 1px solid transparent;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s, transform 0.08s;
-        }
+    .field-row > div { flex: 1; }
 
-        .trip-item:hover {
-            background: rgba(15, 23, 42, 0.9);
-            border-color: rgba(148, 163, 184, 0.4);
-            transform: translateY(-1px);
-        }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-        .trip-item.active {
-            background: var(--accent-soft);
-            border-color: var(--accent);
-        }
+    button:hover {
+      background: rgba(30, 64, 175, 0.7);
+      border-color: var(--accent);
+    }
 
-        .trip-name { font-size: 0.9rem; }
-        .trip-meta { font-size: 0.75rem; color: var(--muted); }
+    button.primary {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
 
-        .trip-actions {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+    button.danger {
+      background: rgba(127, 29, 29, 0.7);
+      border-color: var(--danger);
+    }
 
-        button {
-            border: none;
-            border-radius: 999px;
-            padding: 6px 10px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            background: rgba(15, 23, 42, 0.9);
-            color: var(--text);
-            border: 1px solid rgba(148, 163, 184, 0.4);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.12s, border-color 0.12s, transform 0.08s;
-        }
+    .trip-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
 
-        button:hover {
-            background: rgba(30, 64, 175, 0.7);
-            border-color: var(--accent);
-            transform: translateY(-0.5px);
-        }
+    .trip-item {
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
 
-        button.primary {
-            background: var(--accent-soft);
-            border-color: var(--accent);
-        }
+    .trip-item:hover {
+      border-color: rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+    }
 
-        button.danger {
-            background: rgba(127, 29, 29, 0.7);
-            border-color: var(--danger);
-        }
+    .trip-item.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
 
-        button.icon-only {
-            padding: 4px 7px;
-            border-radius: 999px;
-        }
+    .trip-name { font-size: 0.9rem; }
+    .trip-meta { font-size: 0.75rem; color: var(--muted); }
 
-        input,
-        textarea {
-            width: 100%;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: rgba(15, 23, 42, 0.9);
-            color: var(--text);
-            padding: 7px 9px;
-            font-size: 0.85rem;
-            outline: none;
-            transition: border-color 0.12s, box-shadow 0.12s, background 0.12s;
-        }
+    .day-block {
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+    }
 
-        input:focus,
-        textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
-            background: rgba(15, 23, 42, 1);
-        }
+    .day-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
 
-        textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
+    .entries {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-        .field-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
+    .entry {
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 6px 8px;
+      background: rgba(15, 23, 42, 0.95);
+    }
 
-        .field-row > div { flex: 1; }
+    .entry-title {
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+    }
 
-        label {
-            font-size: 0.75rem;
-            color: var(--muted);
-            display: block;
-            margin-bottom: 3px;
-        }
+    .entry-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
 
-        .days-strip {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 10px;
-        }
+    .entry-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
 
-        .day-pill {
-            padding: 5px 9px;
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.4);
-            font-size: 0.8rem;
-            cursor: pointer;
-            background: rgba(15, 23, 42, 0.9);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
+    .small {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
 
-        .day-pill.active {
-            border-color: var(--accent);
-            background: var(--accent-soft);
-        }
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
 
-        .day-pill span.dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 999px;
-            background: var(--accent);
-        }
+    .sync-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-        .entries-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 360px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
+    .sync-indicator span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #f97373;
+      box-shadow: 0 0 10px rgba(249, 115, 115, 0.9);
+    }
 
-        .entry-card {
-            border-radius: 9px;
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            padding: 8px 9px;
-            background: rgba(15, 23, 42, 0.95);
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            gap: 6px;
-        }
+    .sync-indicator.ok span.dot {
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
 
-        .entry-main {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
+    /* Add Stop button */
+    .add-stop-button {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 20;
+    }
 
-        .entry-title-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
+    /* Slide-up panel */
+    .panel-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 30;
+    }
 
-        .entry-title { font-size: 0.9rem; }
-        .entry-time { font-size: 0.8rem; color: var(--muted); }
+    .panel-backdrop.show {
+      display: flex;
+    }
 
-        .entry-meta { font-size: 0.75rem; color: var(--muted); }
-        .entry-notes { font-size: 0.8rem; color: #cbd5f5; }
+    .panel {
+      width: 100%;
+      max-width: 900px;
+      background: #020617;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 12px 12px 16px;
+      box-shadow: 0 -18px 40px rgba(15, 23, 42, 0.8);
+    }
 
-        .entry-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
 
-        .section-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            font-size: 0.75rem;
-            color: var(--muted);
-        }
-
-        .sync-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .sync-indicator span.dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 999px;
-            background: #f97373;
-            box-shadow: 0 0 10px rgba(249, 115, 115, 0.9);
-        }
-
-        .sync-indicator.ok span.dot {
-            background: #22c55e;
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
-        }
-
-        .small { font-size: 0.75rem; }
-    </style>
+    .panel-header-title {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+  </style>
 </head>
 <body>
-<div class="app-shell">
-    <header>
-        <h1>
-            <span class="logo-dot"></span>
-            Trip Schedule Planner
-        </h1>
-        <div class="status-pill" id="status-pill">
-            <span class="status-dot"></span>
-            <span id="status-text">Offline · Local only</span>
-        </div>
-    </header>
+<div class="app">
+  <header>
+    <h1>Trip Schedule Planner</h1>
+    <div class="status-pill">
+      <span class="status-dot"></span>
+      <span id="status-text">Offline · Local only</span>
+    </div>
+  </header>
 
-    <main>
-        <!-- Left: Trips -->
-        <section class="card">
-            <div class="card-title">Trips</div>
-            <div class="field-row" style="margin-bottom: 10px;">
-                <div>
-                    <label>New trip name</label>
-                    <input id="new-trip-name" placeholder="e.g. Kyoto 2026" />
-                </div>
-                <div style="flex: 0 0 auto; align-self: flex-end;">
-                    <button class="primary" id="add-trip-btn">Add trip</button>
-                </div>
-            </div>
-            <div class="trip-list" id="trip-list"></div>
-        </section>
+  <!-- Trips -->
+  <section class="card">
+    <div class="card-title">Trips</div>
+    <div class="field-row" style="margin-bottom: 8px;">
+      <div>
+        <label>New trip name</label>
+        <input id="new-trip-name" placeholder="e.g. Japan Trip" />
+      </div>
+      <div style="flex:0 0 auto; align-self:flex-end;">
+        <button class="primary" id="add-trip-btn">Add trip</button>
+      </div>
+    </div>
+    <div class="trip-list" id="trip-list"></div>
+  </section>
 
-        <!-- Right: Days + Entries -->
-        <section class="card">
-            <div class="card-title" id="current-trip-title">No trip selected</div>
+  <!-- Days & Stops -->
+  <section class="card">
+    <div class="card-title" id="current-trip-title">No trip selected</div>
+    <div id="days-container"></div>
+    <div class="footer-row">
+      <div class="sync-indicator" id="sync-indicator">
+        <span class="dot"></span>
+        <span id="sync-text">Local only</span>
+      </div>
+      <div class="small" id="last-updated-text">Last updated: –</div>
+    </div>
+  </section>
+</div>
 
-            <div class="field-row" style="margin-bottom: 10px;">
-                <div>
-                    <label>Rename trip</label>
-                    <input id="rename-trip-input" placeholder="Click a trip first" />
-                </div>
-                <div style="flex: 0 0 auto; align-self: flex-end;">
-                    <button id="rename-trip-btn">Rename</button>
-                </div>
-            </div>
+<!-- Add Stop button -->
+<button class="primary add-stop-button" id="open-panel-btn">Add stop</button>
 
-            <div class="days-strip" id="days-strip"></div>
-
-            <div class="field-row" style="margin-bottom: 10px;">
-                <div>
-                    <label>New day label</label>
-                    <input id="new-day-label" placeholder="Day 4 · Kyoto" />
-                </div>
-                <div style="flex: 0 0 auto; align-self: flex-end;">
-                    <button class="primary" id="add-day-btn">Add day</button>
-                </div>
-            </div>
-
-            <div class="entries-list" id="entries-list"></div>
-
-            <div style="margin-top: 12px; border-top: 1px solid rgba(148,163,184,0.25); padding-top: 10px;">
-                <div class="field-row">
-                    <div>
-                        <label>Time</label>
-                        <input id="entry-time" placeholder="09:30" />
-                    </div>
-                    <div>
-                        <label>Title</label>
-                        <input id="entry-title" placeholder="Breakfast at Tsukiji" />
-                    </div>
-                </div>
-                <div class="field-row">
-                    <div>
-                        <label>Category</label>
-                        <input id="entry-category" placeholder="Food / Sightseeing / Transit" />
-                    </div>
-                    <div>
-                        <label>Location</label>
-                        <input id="entry-location" placeholder="Shinjuku, Tokyo" />
-                    </div>
-                </div>
-                <div style="margin-bottom: 8px;">
-                    <label>Notes</label>
-                    <textarea id="entry-notes" placeholder="Reservation at 9:30, walk from hotel."></textarea>
-                </div>
-                <button class="primary" id="add-entry-btn">Add stop to current day</button>
-            </div>
-
-            <div class="section-footer">
-                <div class="sync-indicator" id="sync-indicator">
-                    <span class="dot"></span>
-                    <span id="sync-text">Local only</span>
-                </div>
-                <div class="small" id="last-updated-text">Last updated: –</div>
-            </div>
-        </section>
-    </main>
+<!-- Slide-up panel -->
+<div class="panel-backdrop" id="panel-backdrop">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-header-title">Add / edit stop</div>
+      <button class="danger" id="close-panel-btn">Close</button>
+    </div>
+    <div class="field-row">
+      <div>
+        <label>Time</label>
+        <input id="entry-time" placeholder="9:00 AM" />
+      </div>
+      <div>
+        <label>Title</label>
+        <input id="entry-title" placeholder="Sensō-ji Temple" />
+      </div>
+    </div>
+    <div class="field-row">
+      <div>
+        <label>Category</label>
+        <input id="entry-category" placeholder="Temple / Food / Transit" />
+      </div>
+      <div>
+        <label>Location</label>
+        <input id="entry-location" placeholder="Asakusa, Tokyo" />
+      </div>
+    </div>
+    <div style="margin-bottom:8px;">
+      <label>Notes</label>
+      <textarea id="entry-notes" placeholder="Short notes, reservation info, etc."></textarea>
+    </div>
+    <div class="field-row">
+      <div>
+        <label>Day</label>
+        <select id="entry-day-select"></select>
+      </div>
+      <div style="flex:0 0 auto; align-self:flex-end;">
+        <button class="primary" id="save-entry-btn">Save stop</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Firebase SDKs -->
@@ -431,657 +386,530 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
 
 <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyB3iogR7d8D-yFNQuuJ1_FjmsvwCrafldI",
-      authDomain: "dayplanner-dea19.firebaseapp.com",
-      projectId: "dayplanner-dea19",
-      storageBucket: "dayplanner-dea19.firebasestorage.app",
-      messagingSenderId: "208314336631",
-      appId: "1:208314336631:web:a9084375b97594cb860d72",
-      measurementId: "G-XJFHPBD0TR"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyB3iogR7d8D-yFNQuuJ1_FjmsvwCrafldI",
+    authDomain: "dayplanner-dea19.firebaseapp.com",
+    projectId: "dayplanner-dea19",
+    storageBucket: "dayplanner-dea19.firebasestorage.app",
+    messagingSenderId: "208314336631",
+    appId: "1:208314336631:web:a9084375b97594cb860d72",
+    measurementId: "G-XJFHPBD0TR"
+  };
 
-    let app = null;
-    let db = null;
-    let analytics = null;
-    let firestoreReady = false;
+  let app = null;
+  let db = null;
+  let analytics = null;
+  let firestoreReady = false;
+  let saving = false;
 
-    function setStatus(ok, text) {
-        const statusText = document.getElementById("status-text");
-        const statusDot = document.querySelector(".status-dot");
-        const syncText = document.getElementById("sync-text");
-        const syncIndicator = document.getElementById("sync-indicator");
+  function setStatus(ok, text) {
+    const statusText = document.getElementById("status-text");
+    const statusDot = document.querySelector(".status-dot");
+    const syncText = document.getElementById("sync-text");
+    const syncIndicator = document.getElementById("sync-indicator");
 
-        statusText.textContent = text;
-        syncText.textContent = ok ? "Synced" : "Local only";
-        syncIndicator.classList.toggle("ok", ok);
+    statusText.textContent = text;
+    syncText.textContent = ok ? "Synced" : "Local only";
+    syncIndicator.classList.toggle("ok", ok);
 
-        statusDot.style.background = ok ? "#22c55e" : "#f97373";
-        statusDot.style.boxShadow = ok
-            ? "0 0 10px rgba(34, 197, 94, 0.9)"
-            : "0 0 10px rgba(249, 115, 115, 0.9)";
-    }
+    statusDot.style.background = ok ? "#22c55e" : "#f97373";
+    statusDot.style.boxShadow = ok
+      ? "0 0 10px rgba(34, 197, 94, 0.9)"
+      : "0 0 10px rgba(249, 115, 115, 0.9)";
+  }
 
-    try {
-        app = firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore();
-        analytics = firebase.analytics();
-        firestoreReady = true;
-        setStatus(true, "Connected · Cloud sync");
-    } catch (e) {
-        console.warn("Firebase init failed, staying local-only", e);
-        setStatus(false, "Offline · Local only");
-    }
+  try {
+    app = firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    analytics = firebase.analytics();
+    firestoreReady = true;
+    setStatus(true, "Connected · Cloud sync");
+  } catch (e) {
+    console.warn("Firebase init failed, staying local-only", e);
+    setStatus(false, "Offline · Local only");
+  }
 
-    const LOCAL_KEY = "dayplanner_sections";
-    const DOC_PATH = { collection: "plans", doc: "dayplanner" };
+  const LOCAL_KEY = "dayplanner_sections";
+  const DOC_PATH = { collection: "plans", doc: "dayplanner" };
 
-    const initialSections = {
-        trips: [
-            {
-                id: "japan-trip",
-                name: "Japan Trip",
-                days: [
-                    {
-                        id: "day1-old-tokyo",
-                        label: "Day 1 — Old Tokyo: Temples, Towers & Matcha",
-                        entries: [
-                            {
-                                id: "d1-sensoji",
-                                time: "9:00 AM",
-                                title: "Sensō-ji Temple",
-                                category: "Temple",
-                                location: "Asakusa",
-                                notes: "Tokyo's oldest temple, founded 645 AD."
-                            },
-                            {
-                                id: "d1-asakusa-shrine",
-                                time: "9:45 AM",
-                                title: "Asakusa Shrine",
-                                category: "Shrine",
-                                location: "Asakusa",
-                                notes: "Right next door to Sensō-ji, calmer and less crowded. 15-min stop for a different vibe."
-                            },
-                            {
-                                id: "d1-suzukien",
-                                time: "11:00 AM",
-                                title: "Suzukien Asakusa",
-                                category: "Food",
-                                location: "Asakusa",
-                                notes: "Famous matcha gelato, 7 intensity levels."
-                            },
-                            {
-                                id: "d1-skytree",
-                                time: "12:30 PM",
-                                title: "Tokyo Skytree",
-                                category: "Viewpoint",
-                                location: "Sumida",
-                                notes: "Tallest tower in Japan, panoramic views."
-                            }
-                        ]
-                    },
-                    {
-                        id: "day2-zoo-arcades",
-                        label: "Day 2 — Zoo, Arcades & Night Market",
-                        entries: [
-                            {
-                                id: "d2-ueno-zoo",
-                                time: "9:00 AM",
-                                title: "Ueno Zoo",
-                                category: "Zoo",
-                                location: "Ueno",
-                                notes: "Pandas, polar bears, red pandas."
-                            },
-                            {
-                                id: "d2-kiyomizu-kannon",
-                                time: "11:00 AM",
-                                title: "Kiyomizu Kannon-dō Temple",
-                                category: "Temple",
-                                location: "Ueno Park",
-                                notes: "1632 temple modeled after Kyoto's Kiyomizu-dera, with circular 'Moon Pine'."
-                            },
-                            {
-                                id: "d2-ueno-toshogu",
-                                time: "11:30 AM",
-                                title: "Ueno Toshogu Shrine",
-                                category: "Shrine",
-                                location: "Ueno Park",
-                                notes: "Gold-leafed Edo-period shrine, built 1627, a few minutes from Kiyomizu Kannon-dō."
-                            },
-                            {
-                                id: "d2-gamers",
-                                time: "1:00 PM",
-                                title: "Akihabara Gamers",
-                                category: "Shopping",
-                                location: "Akihabara",
-                                notes: "7-floor anime/manga superstore."
-                            },
-                            {
-                                id: "d2-kanda-myojin",
-                                time: "2:00 PM",
-                                title: "Kanda Myojin Shrine",
-                                category: "Shrine",
-                                location: "Akihabara",
-                                notes: "Historic shrine popular with anime/gaming fans for tech luck blessings."
-                            },
-                            {
-                                id: "d2-taito",
-                                time: "3:00 PM",
-                                title: "TAITO Station Akihabara",
-                                category: "Arcade",
-                                location: "Akihabara",
-                                notes: "Arcade: claw machines, fighting/rhythm games."
-                            },
-                            {
-                                id: "d2-donki",
-                                time: "4:30 PM",
-                                title: "Don Quijote Akihabara",
-                                category: "Shopping",
-                                location: "Akihabara",
-                                notes: "Chaotic discount megastore, open 24 hours."
-                            },
-                            {
-                                id: "d2-ameyoko",
-                                time: "6:30 PM",
-                                title: "Ameyoko Market",
-                                category: "Market",
-                                location: "Ueno",
-                                notes: "Night market, street food."
-                            }
-                        ]
-                    },
-                    {
-                        id: "day3-harajuku-shibuya",
-                        label: "Day 3 — Harajuku & Shibuya",
-                        entries: [
-                            {
-                                id: "d3-meiji",
-                                time: "9:00 AM",
-                                title: "Meiji Jingu Shrine",
-                                category: "Shrine",
-                                location: "Harajuku",
-                                notes: ""
-                            },
-                            {
-                                id: "d3-new-balance",
-                                time: "12:00 PM",
-                                title: "New Balance Harajuku",
-                                category: "Shopping",
-                                location: "Harajuku",
-                                notes: ""
-                            },
-                            {
-                                id: "d3-free-period",
-                                time: "1:00 PM – 2:30 PM",
-                                title: "Free/split period",
-                                category: "Free time",
-                                location: "Harajuku / Cat Street",
-                                notes: "Open block for the group to split up. Reconvene at THE MATCHA TOKYO."
-                            },
-                            {
-                                id: "d3-matcha-tokyo",
-                                time: "2:45 PM",
-                                title: "THE MATCHA TOKYO Harajuku",
-                                category: "Food",
-                                location: "Harajuku",
-                                notes: ""
-                            },
-                            {
-                                id: "d3-parco",
-                                time: "4:00 PM",
-                                title: "Shibuya PARCO",
-                                category: "Shopping",
-                                location: "Shibuya",
-                                notes: ""
-                            },
-                            {
-                                id: "d3-crossing",
-                                time: "6:00 PM",
-                                title: "Shibuya Crossing",
-                                category: "Sightseeing",
-                                location: "Shibuya",
-                                notes: ""
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    };
-
-    let sections = initialSections;
-    let currentTripId = "japan-trip";
-    let currentDayId = "day1-old-tokyo";
-    let saving = false;
-
-    function uid() {
-        return Math.random().toString(36).slice(2) + Date.now().toString(36);
-    }
-
-    function nowText() {
-        return new Date().toLocaleString();
-    }
-
-    function renderTrips() {
-        const list = document.getElementById("trip-list");
-        list.innerHTML = "";
-
-        sections.trips.forEach(trip => {
-            const div = document.createElement("div");
-            div.className = "trip-item" + (trip.id === currentTripId ? " active" : "");
-            div.dataset.id = trip.id;
-
-            const left = document.createElement("div");
-            left.style.flex = "1 1 auto";
-
-            const name = document.createElement("div");
-            name.className = "trip-name";
-            name.textContent = trip.name || "Untitled trip";
-
-            const meta = document.createElement("div");
-            meta.className = "trip-meta";
-            meta.textContent = `${trip.days.length} day(s)`;
-
-            left.appendChild(name);
-            left.appendChild(meta);
-
-            const actions = document.createElement("div");
-            actions.className = "trip-actions";
-
-            const selectBtn = document.createElement("button");
-            selectBtn.className = "icon-only";
-            selectBtn.textContent = "Open";
-            selectBtn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                currentTripId = trip.id;
-                if (!trip.days.length) {
-                    const day = { id: uid(), label: "Day 1", entries: [] };
-                    trip.days.push(day);
-                }
-                currentDayId = trip.days[0].id;
-                renderAll();
-                saveSections();
-            });
-
-            const deleteBtn = document.createElement("button");
-            deleteBtn.className = "icon-only danger";
-            deleteBtn.textContent = "✕";
-            deleteBtn.title = "Delete trip";
-            deleteBtn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                if (!confirm("Delete this trip?")) return;
-                sections.trips = sections.trips.filter(t => t.id !== trip.id);
-                if (currentTripId === trip.id) {
-                    currentTripId = null;
-                    currentDayId = null;
-                }
-                renderAll();
-                saveSections();
-            });
-
-            actions.appendChild(selectBtn);
-            actions.appendChild(deleteBtn);
-
-            div.appendChild(left);
-            div.appendChild(actions);
-
-            div.addEventListener("click", () => {
-                currentTripId = trip.id;
-                if (!trip.days.length) {
-                    const day = { id: uid(), label: "Day 1", entries: [] };
-                    trip.days.push(day);
-                }
-                currentDayId = trip.days[0].id;
-                renderAll();
-                saveSections();
-            });
-
-            list.appendChild(div);
-        });
-    }
-
-    function renderDays() {
-        const strip = document.getElementById("days-strip");
-        strip.innerHTML = "";
-
-        const trip = sections.trips.find(t => t.id === currentTripId);
-        if (!trip) {
-            document.getElementById("current-trip-title").textContent = "No trip selected";
-            return;
-        }
-
-        document.getElementById("current-trip-title").textContent = trip.name || "Untitled trip";
-
-        if (!trip.days.length) {
-            const day = { id: uid(), label: "Day 1", entries: [] };
-            trip.days.push(day);
-            currentDayId = day.id;
-        }
-
-        if (!currentDayId) {
-            currentDayId = trip.days[0].id;
-        }
-
-        trip.days.forEach(day => {
-            const pill = document.createElement("div");
-            pill.className = "day-pill" + (day.id === currentDayId ? " active" : "");
-            pill.dataset.id = day.id;
-
-            const dot = document.createElement("span");
-            dot.className = "dot";
-
-            const label = document.createElement("span");
-            label.textContent = day.label || "Untitled day";
-
-            pill.appendChild(dot);
-            pill.appendChild(label);
-
-            pill.addEventListener("click", () => {
-                currentDayId = day.id;
-                renderEntries();
-            });
-
-            strip.appendChild(pill);
-        });
-    }
-
-    function renderEntries() {
-        const list = document.getElementById("entries-list");
-        list.innerHTML = "";
-
-        const trip = sections.trips.find(t => t.id === currentTripId);
-        if (!trip) return;
-
-        const day = trip.days.find(d => d.id === currentDayId);
-        if (!day) return;
-
-        day.entries.forEach(entry => {
-            const card = document.createElement("div");
-            card.className = "entry-card";
-            card.dataset.id = entry.id;
-
-            const main = document.createElement("div");
-            main.className = "entry-main";
-
-            const titleRow = document.createElement("div");
-            titleRow.className = "entry-title-row";
-
-            const title = document.createElement("div");
-            title.className = "entry-title";
-            title.textContent = entry.title || "(Untitled)";
-
-            const time = document.createElement("div");
-            time.className = "entry-time";
-            time.textContent = entry.time || "";
-
-            titleRow.appendChild(title);
-            titleRow.appendChild(time);
-
-            const meta = document.createElement("div");
-            meta.className = "entry-meta";
-            meta.textContent = [entry.category, entry.location].filter(Boolean).join(" · ");
-
-            const notes = document.createElement("div");
-            notes.className = "entry-notes";
-            notes.textContent = entry.notes || "";
-
-            main.appendChild(titleRow);
-            main.appendChild(meta);
-            if (entry.notes) main.appendChild(notes);
-
-            const actions = document.createElement("div");
-            actions.className = "entry-actions";
-
-            const editBtn = document.createElement("button");
-            editBtn.className = "icon-only";
-            editBtn.textContent = "Edit";
-            editBtn.addEventListener("click", () => {
-                document.getElementById("entry-time").value = entry.time || "";
-                document.getElementById("entry-title").value = entry.title || "";
-                document.getElementById("entry-category").value = entry.category || "";
-                document.getElementById("entry-location").value = entry.location || "";
-                document.getElementById("entry-notes").value = entry.notes || "";
-                document.getElementById("add-entry-btn").dataset.editingId = entry.id;
-            });
-
-            const deleteBtn = document.createElement("button");
-            deleteBtn.className = "icon-only danger";
-            deleteBtn.textContent = "✕";
-            deleteBtn.addEventListener("click", () => {
-                if (!confirm("Delete this stop?")) return;
-                day.entries = day.entries.filter(e => e.id !== entry.id);
-                renderEntries();
-                saveSections();
-            });
-
-            actions.appendChild(editBtn);
-            actions.appendChild(deleteBtn);
-
-            card.appendChild(main);
-            card.appendChild(actions);
-
-            list.appendChild(card);
-        });
-    }
-
-    function renderAll() {
-        renderTrips();
-        renderDays();
-        renderEntries();
-    }
-
-    function loadFromLocal() {
-        try {
-            const raw = localStorage.getItem(LOCAL_KEY);
-            if (!raw) return false;
-            const parsed = JSON.parse(raw);
-            sections = parsed;
-            if (!sections.trips.length) {
-                sections = initialSections;
-            }
-            currentTripId = sections.trips[0].id;
-            currentDayId = sections.trips[0].days[0].id;
-            renderAll();
-            document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
-            return true;
-        } catch (e) {
-            console.error("Local load failed", e);
-            return false;
-        }
-    }
-
-    async function loadFromCloud() {
-        if (!firestoreReady) return;
-        try {
-            const docRef = db.collection(DOC_PATH.collection).doc(DOC_PATH.doc);
-            const snap = await docRef.get();
-            if (snap.exists) {
-                const data = snap.data();
-                sections = data.sections || initialSections;
-            } else {
-                sections = initialSections;
-                await docRef.set({ sections });
-            }
-            currentTripId = sections.trips[0].id;
-            currentDayId = sections.trips[0].days[0].id;
-            renderAll();
-            localStorage.setItem(LOCAL_KEY, JSON.stringify(sections));
-            document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
-            setStatus(true, "Connected · Cloud sync");
-        } catch (e) {
-            console.error("Cloud load failed", e);
-            setStatus(false, "Offline · Local only");
-        }
-    }
-
-    async function saveSections() {
-        saving = true;
-        try {
-            localStorage.setItem(LOCAL_KEY, JSON.stringify(sections));
-            document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
-
-            if (firestoreReady) {
-                const docRef = db.collection(DOC_PATH.collection).doc(DOC_PATH.doc);
-                await docRef.set({ sections });
-                setStatus(true, "Connected · Cloud sync");
-            }
-        } catch (e) {
-            console.error("Save failed", e);
-            setStatus(false, "Offline · Local only");
-        } finally {
-            saving = false;
-        }
-    }
-
-    function subscribeCloud() {
-        if (!firestoreReady) return;
-        const docRef = db.collection(DOC_PATH.collection).doc(DOC_PATH.doc);
-        docRef.onSnapshot((snap) => {
-            if (!snap.exists) return;
-            if (saving) return;
-            try {
-                const data = snap.data();
-                const incoming = data.sections;
-                const localHash = JSON.stringify(sections);
-                const incomingHash = JSON.stringify(incoming);
-                if (incomingHash !== localHash) {
-                    sections = incoming;
-                    currentTripId = sections.trips[0].id;
-                    currentDayId = sections.trips[0].days[0].id;
-                    renderAll();
-                    localStorage.setItem(LOCAL_KEY, JSON.stringify(sections));
-                    document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
-                    setStatus(true, "Connected · Cloud sync");
-                }
-            } catch (e) {
-                console.error("Snapshot error", e);
-            }
-        });
-    }
-
-    document.getElementById("add-trip-btn").addEventListener("click", () => {
-        const nameInput = document.getElementById("new-trip-name");
-        const name = nameInput.value.trim() || "Untitled trip";
-        nameInput.value = "";
-
-        const trip = {
-            id: uid(),
-            name,
-            days: [
-                { id: uid(), label: "Day 1", entries: [] }
+  const initialSections = {
+    trips: [
+      {
+        id: "japan-trip",
+        name: "Japan Trip",
+        days: [
+          {
+            id: "day1-old-tokyo",
+            label: "Day 1 — Old Tokyo",
+            entries: [
+              {
+                id: "d1-sensoji",
+                time: "9:00 AM",
+                title: "Sensō-ji Temple",
+                category: "Temple",
+                location: "Asakusa",
+                notes: "Tokyo's oldest temple, founded 645 AD."
+              },
+              {
+                id: "d1-asakusa-shrine",
+                time: "9:45 AM",
+                title: "Asakusa Shrine",
+                category: "Shrine",
+                location: "Asakusa",
+                notes: "Calmer shrine next to Sensō-ji."
+              },
+              {
+                id: "d1-skytree",
+                time: "12:30 PM",
+                title: "Tokyo Skytree",
+                category: "Viewpoint",
+                location: "Sumida",
+                notes: "Panoramic views of Tokyo."
+              }
             ]
-        };
+          },
+          {
+            id: "day2-zoo-arcades",
+            label: "Day 2 — Zoo & Arcades",
+            entries: [
+              {
+                id: "d2-ueno-zoo",
+                time: "9:00 AM",
+                title: "Ueno Zoo",
+                category: "Zoo",
+                location: "Ueno",
+                notes: "Pandas, polar bears, red pandas."
+              },
+              {
+                id: "d2-akihabara",
+                time: "1:00 PM",
+                title: "Akihabara Arcades",
+                category: "Arcade",
+                location: "Akihabara",
+                notes: "TAITO Station, claw machines, rhythm games."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
 
-        sections.trips.push(trip);
+  let sections = initialSections;
+  let currentTripId = "japan-trip";
+
+  function uid() {
+    return Math.random().toString(36).slice(2) + Date.now().toString(36);
+  }
+
+  function nowText() {
+    return new Date().toLocaleString();
+  }
+
+  function renderTrips() {
+    const list = document.getElementById("trip-list");
+    list.innerHTML = "";
+
+    sections.trips.forEach(trip => {
+      const div = document.createElement("div");
+      div.className = "trip-item" + (trip.id === currentTripId ? " active" : "");
+      div.dataset.id = trip.id;
+
+      const left = document.createElement("div");
+      left.style.flex = "1 1 auto";
+
+      const name = document.createElement("div");
+      name.className = "trip-name";
+      name.textContent = trip.name || "Untitled trip";
+
+      const meta = document.createElement("div");
+      meta.className = "trip-meta";
+      meta.textContent = `${trip.days.length} day(s)`;
+
+      left.appendChild(name);
+      left.appendChild(meta);
+
+      const actions = document.createElement("div");
+      actions.style.display = "flex";
+      actions.style.gap = "6px";
+
+      const openBtn = document.createElement("button");
+      openBtn.textContent = "Open";
+      openBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
         currentTripId = trip.id;
-        currentDayId = trip.days[0].id;
         renderAll();
         saveSections();
-    });
+      });
 
-    document.getElementById("rename-trip-btn").addEventListener("click", () => {
-        if (!currentTripId) {
-            alert("Select a trip first.");
-            return;
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "danger";
+      deleteBtn.textContent = "Delete";
+      deleteBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (!confirm("Delete this trip?")) return;
+        sections.trips = sections.trips.filter(t => t.id !== trip.id);
+        if (currentTripId === trip.id) {
+          currentTripId = sections.trips.length ? sections.trips[0].id : null;
         }
-        const input = document.getElementById("rename-trip-input");
-        const name = input.value.trim();
-        if (!name) {
-            alert("Enter a new name.");
-            return;
-        }
-        const trip = sections.trips.find(t => t.id === currentTripId);
-        if (!trip) return;
-        trip.name = name;
         renderAll();
         saveSections();
-    });
+      });
 
-    document.getElementById("add-day-btn").addEventListener("click", () => {
-        if (!currentTripId) {
-            alert("Select a trip first.");
-            return;
-        }
-        const labelInput = document.getElementById("new-day-label");
-        const label = labelInput.value.trim() || "New day";
-        labelInput.value = "";
+      actions.appendChild(openBtn);
+      actions.appendChild(deleteBtn);
 
-        const trip = sections.trips.find(t => t.id === currentTripId);
-        if (!trip) return;
+      div.appendChild(left);
+      div.appendChild(actions);
 
-        const day = { id: uid(), label, entries: [] };
-        trip.days.push(day);
-        currentDayId = day.id;
+      div.addEventListener("click", () => {
+        currentTripId = trip.id;
         renderAll();
         saveSections();
+      });
+
+      list.appendChild(div);
     });
+  }
 
-    document.getElementById("add-entry-btn").addEventListener("click", () => {
-        if (!currentTripId || !currentDayId) {
-            alert("Select a trip and day first.");
-            return;
+  function renderDays() {
+    const container = document.getElementById("days-container");
+    container.innerHTML = "";
+
+    const trip = sections.trips.find(t => t.id === currentTripId);
+    if (!trip) {
+      document.getElementById("current-trip-title").textContent = "No trip selected";
+      return;
+    }
+
+    document.getElementById("current-trip-title").textContent = trip.name || "Untitled trip";
+
+    trip.days.forEach(day => {
+      const block = document.createElement("div");
+      block.className = "day-block";
+
+      const title = document.createElement("div");
+      title.className = "day-title";
+      title.textContent = day.label || "Untitled day";
+
+      const entriesDiv = document.createElement("div");
+      entriesDiv.className = "entries";
+
+      day.entries.forEach(entry => {
+        const eDiv = document.createElement("div");
+        eDiv.className = "entry";
+        eDiv.dataset.id = entry.id;
+
+        const eTitle = document.createElement("div");
+        eTitle.className = "entry-title";
+        eTitle.textContent = entry.title || "(Untitled)";
+
+        const eMeta = document.createElement("div");
+        eMeta.className = "entry-meta";
+        const metaParts = [];
+        if (entry.time) metaParts.push(entry.time);
+        if (entry.category) metaParts.push(entry.category);
+        if (entry.location) metaParts.push(entry.location);
+        eMeta.textContent = metaParts.join(" · ");
+
+        const actions = document.createElement("div");
+        actions.className = "entry-actions";
+
+        const mapsBtn = document.createElement("button");
+        mapsBtn.textContent = "Open in Apple Maps";
+        mapsBtn.addEventListener("click", () => {
+          const q = encodeURIComponent(entry.location || entry.title || "");
+          if (!q) return;
+          window.open("https://maps.apple.com/?q=" + q, "_blank");
+        });
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", () => {
+          openPanel(day.id, entry);
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "danger";
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click", () => {
+          if (!confirm("Delete this stop?")) return;
+          day.entries = day.entries.filter(e => e.id !== entry.id);
+          renderDays();
+          saveSections();
+        });
+
+        actions.appendChild(mapsBtn);
+        actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
+
+        eDiv.appendChild(eTitle);
+        eDiv.appendChild(eMeta);
+        if (entry.notes) {
+          const notesDiv = document.createElement("div");
+          notesDiv.className = "small";
+          notesDiv.textContent = entry.notes;
+          eDiv.appendChild(notesDiv);
         }
+        eDiv.appendChild(actions);
 
-        const time = document.getElementById("entry-time").value.trim();
-        const title = document.getElementById("entry-title").value.trim();
-        const category = document.getElementById("entry-category").value.trim();
-        const location = document.getElementById("entry-location").value.trim();
-        const notes = document.getElementById("entry-notes").value.trim();
+        entriesDiv.appendChild(eDiv);
+      });
 
-        const trip = sections.trips.find(t => t.id === currentTripId);
-        if (!trip) return;
-        const day = trip.days.find(d => d.id === currentDayId);
-        if (!day) return;
-
-        const editingId = document.getElementById("add-entry-btn").dataset.editingId;
-
-        if (editingId) {
-            const entry = day.entries.find(e => e.id === editingId);
-            if (entry) {
-                entry.time = time;
-                entry.title = title;
-                entry.category = category;
-                entry.location = location;
-                entry.notes = notes;
-            }
-            document.getElementById("add-entry-btn").dataset.editingId = "";
-        } else {
-            const entry = {
-                id: uid(),
-                time,
-                title,
-                category,
-                location,
-                notes
-            };
-            day.entries.push(entry);
-        }
-
-        document.getElementById("entry-time").value = "";
-        document.getElementById("entry-title").value = "";
-        document.getElementById("entry-category").value = "";
-        document.getElementById("entry-location").value = "";
-        document.getElementById("entry-notes").value = "";
-
-        renderEntries();
-        saveSections();
+      block.appendChild(title);
+      block.appendChild(entriesDiv);
+      container.appendChild(block);
     });
+  }
 
-    (async function init() {
-        const hadLocal = loadFromLocal();
-        if (!hadLocal && firestoreReady) {
-            await loadFromCloud();
-        } else if (!hadLocal) {
-            sections = initialSections;
-            currentTripId = sections.trips[0].id;
-            currentDayId = sections.trips[0].days[0].id;
-            renderAll();
-            saveSections();
+  function renderDaySelect() {
+    const select = document.getElementById("entry-day-select");
+    select.innerHTML = "";
+
+    const trip = sections.trips.find(t => t.id === currentTripId);
+    if (!trip) return;
+
+    trip.days.forEach(day => {
+      const opt = document.createElement("option");
+      opt.value = day.id;
+      opt.textContent = day.label || "Untitled day";
+      select.appendChild(opt);
+    });
+  }
+
+  function renderAll() {
+    renderTrips();
+    renderDays();
+    renderDaySelect();
+  }
+
+  function loadFromLocal() {
+    try {
+      const raw = localStorage.getItem(LOCAL_KEY);
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      sections = parsed;
+      if (!sections.trips.length) {
+        sections = initialSections;
+      }
+      currentTripId = sections.trips[0].id;
+      renderAll();
+      document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
+      return true;
+    } catch (e) {
+      console.error("Local load failed", e);
+      return false;
+    }
+  }
+
+  async function loadFromCloud() {
+    if (!firestoreReady) return;
+    try {
+      const docRef = db.collection(DOC_PATH.collection).doc(DOC_PATH.doc);
+      const snap = await docRef.get();
+      if (snap.exists) {
+        const data = snap.data();
+        sections = data.sections || initialSections;
+      } else {
+        sections = initialSections;
+        await docRef.set({ sections });
+      }
+      currentTripId = sections.trips[0].id;
+      renderAll();
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(sections));
+      document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
+      setStatus(true, "Connected · Cloud sync");
+    } catch (e) {
+      console.error("Cloud load failed", e);
+      setStatus(false, "Offline · Local only");
+    }
+  }
+
+  async function saveSections() {
+    saving = true;
+    try {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(sections));
+      document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
+
+      if (firestoreReady) {
+        const docRef = db.collection(DOC_PATH.collection).doc(DOC_PATH.doc);
+        await docRef.set({ sections });
+        setStatus(true, "Connected · Cloud sync");
+      }
+    } catch (e) {
+      console.error("Save failed", e);
+      setStatus(false, "Offline · Local only");
+    } finally {
+      saving = false;
+    }
+  }
+
+  function subscribeCloud() {
+    if (!firestoreReady) return;
+    const docRef = db.collection(DOC_PATH.collection).doc(DOC_PATH.doc);
+    docRef.onSnapshot((snap) => {
+      if (!snap.exists) return;
+      if (saving) return;
+      try {
+        const data = snap.data();
+        const incoming = data.sections;
+        const localHash = JSON.stringify(sections);
+        const incomingHash = JSON.stringify(incoming);
+        if (incomingHash !== localHash) {
+          sections = incoming;
+          currentTripId = sections.trips[0].id;
+          renderAll();
+          localStorage.setItem(LOCAL_KEY, JSON.stringify(sections));
+          document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
+          setStatus(true, "Connected · Cloud sync");
         }
-        if (firestoreReady) {
-            subscribeCloud();
-        }
-    })();
+      } catch (e) {
+        console.error("Snapshot error", e);
+      }
+    });
+  }
+
+  // Trip add
+  document.getElementById("add-trip-btn").addEventListener("click", () => {
+    const nameInput = document.getElementById("new-trip-name");
+    const name = nameInput.value.trim() || "Untitled trip";
+    nameInput.value = "";
+
+    const trip = {
+      id: uid(),
+      name,
+      days: [
+        { id: uid(), label: "Day 1", entries: [] }
+      ]
+    };
+
+    sections.trips.push(trip);
+    currentTripId = trip.id;
+    renderAll();
+    saveSections();
+  });
+
+  // Panel open/close
+  const panelBackdrop = document.getElementById("panel-backdrop");
+  const openPanelBtn = document.getElementById("open-panel-btn");
+  const closePanelBtn = document.getElementById("close-panel-btn");
+  const saveEntryBtn = document.getElementById("save-entry-btn");
+
+  let editingEntryId = null;
+  let editingDayId = null;
+
+  function openPanel(dayId, entry) {
+    const trip = sections.trips.find(t => t.id === currentTripId);
+    if (!trip) return;
+
+    renderDaySelect();
+
+    if (dayId) {
+      document.getElementById("entry-day-select").value = dayId;
+    }
+
+    if (entry) {
+      editingEntryId = entry.id;
+      editingDayId = dayId;
+      document.getElementById("entry-time").value = entry.time || "";
+      document.getElementById("entry-title").value = entry.title || "";
+      document.getElementById("entry-category").value = entry.category || "";
+      document.getElementById("entry-location").value = entry.location || "";
+      document.getElementById("entry-notes").value = entry.notes || "";
+    } else {
+      editingEntryId = null;
+      editingDayId = null;
+      document.getElementById("entry-time").value = "";
+      document.getElementById("entry-title").value = "";
+      document.getElementById("entry-category").value = "";
+      document.getElementById("entry-location").value = "";
+      document.getElementById("entry-notes").value = "";
+    }
+
+    panelBackdrop.classList.add("show");
+  }
+
+  function closePanel() {
+    panelBackdrop.classList.remove("show");
+  }
+
+  openPanelBtn.addEventListener("click", () => {
+    const trip = sections.trips.find(t => t.id === currentTripId);
+    if (!trip) {
+      alert("Select or create a trip first.");
+      return;
+    }
+    openPanel(null, null);
+  });
+
+  closePanelBtn.addEventListener("click", closePanel);
+  panelBackdrop.addEventListener("click", (e) => {
+    if (e.target === panelBackdrop) closePanel();
+  });
+
+  saveEntryBtn.addEventListener("click", () => {
+    const time = document.getElementById("entry-time").value.trim();
+    const title = document.getElementById("entry-title").value.trim();
+    const category = document.getElementById("entry-category").value.trim();
+    const location = document.getElementById("entry-location").value.trim();
+    const notes = document.getElementById("entry-notes").value.trim();
+    const dayId = document.getElementById("entry-day-select").value;
+
+    const trip = sections.trips.find(t => t.id === currentTripId);
+    if (!trip) {
+      alert("Select or create a trip first.");
+      return;
+    }
+    const day = trip.days.find(d => d.id === dayId);
+    if (!day) {
+      alert("Select a valid day.");
+      return;
+    }
+
+    if (editingEntryId) {
+      const entry = day.entries.find(e => e.id === editingEntryId);
+      if (entry) {
+        entry.time = time;
+        entry.title = title;
+        entry.category = category;
+        entry.location = location;
+        entry.notes = notes;
+      }
+    } else {
+      const entry = {
+        id: uid(),
+        time,
+        title,
+        category,
+        location,
+        notes
+      };
+      day.entries.push(entry);
+    }
+
+    editingEntryId = null;
+    editingDayId = null;
+    closePanel();
+    renderDays();
+    saveSections();
+  });
+
+  (async function init() {
+    const hadLocal = loadFromLocal();
+    if (!hadLocal && firestoreReady) {
+      await loadFromCloud();
+    } else if (!hadLocal) {
+      sections = initialSections;
+      currentTripId = sections.trips[0].id;
+      renderAll();
+      saveSections();
+    }
+    if (firestoreReady) {
+      subscribeCloud();
+    } else {
+      renderAll();
+    }
+  })();
 </script>
 </body>
 </html>
