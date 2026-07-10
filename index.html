@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Trip Schedule Planner</title>
+    <title>Trip Schedule Planner – Japan Trip</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
         :root {
@@ -19,9 +19,7 @@
             --shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -78,8 +76,8 @@
             width: 8px;
             height: 8px;
             border-radius: 999px;
-            background: #22c55e;
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+            background: #f97373;
+            box-shadow: 0 0 10px rgba(249, 115, 115, 0.9);
         }
 
         main {
@@ -89,9 +87,7 @@
         }
 
         @media (max-width: 800px) {
-            main {
-                grid-template-columns: minmax(0, 1fr);
-            }
+            main { grid-template-columns: minmax(0, 1fr); }
         }
 
         .card {
@@ -142,14 +138,8 @@
             border-color: var(--accent);
         }
 
-        .trip-name {
-            font-size: 0.9rem;
-        }
-
-        .trip-meta {
-            font-size: 0.75rem;
-            color: var(--muted);
-        }
+        .trip-name { font-size: 0.9rem; }
+        .trip-meta { font-size: 0.75rem; color: var(--muted); }
 
         .trip-actions {
             display: flex;
@@ -224,9 +214,7 @@
             margin-bottom: 8px;
         }
 
-        .field-row > div {
-            flex: 1;
-        }
+        .field-row > div { flex: 1; }
 
         label {
             font-size: 0.75rem;
@@ -298,24 +286,11 @@
             gap: 8px;
         }
 
-        .entry-title {
-            font-size: 0.9rem;
-        }
+        .entry-title { font-size: 0.9rem; }
+        .entry-time { font-size: 0.8rem; color: var(--muted); }
 
-        .entry-time {
-            font-size: 0.8rem;
-            color: var(--muted);
-        }
-
-        .entry-meta {
-            font-size: 0.75rem;
-            color: var(--muted);
-        }
-
-        .entry-notes {
-            font-size: 0.8rem;
-            color: #cbd5f5;
-        }
+        .entry-meta { font-size: 0.75rem; color: var(--muted); }
+        .entry-notes { font-size: 0.8rem; color: #cbd5f5; }
 
         .entry-actions {
             display: flex;
@@ -342,18 +317,16 @@
             width: 7px;
             height: 7px;
             border-radius: 999px;
-            background: #22c55e;
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
-        }
-
-        .sync-indicator.off span.dot {
             background: #f97373;
             box-shadow: 0 0 10px rgba(249, 115, 115, 0.9);
         }
 
-        .small {
-            font-size: 0.75rem;
+        .sync-indicator.ok span.dot {
+            background: #22c55e;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
         }
+
+        .small { font-size: 0.75rem; }
     </style>
 </head>
 <body>
@@ -365,7 +338,7 @@
         </h1>
         <div class="status-pill" id="status-pill">
             <span class="status-dot"></span>
-            <span id="status-text">Connected · Live sync</span>
+            <span id="status-text">Offline · Local only</span>
         </div>
     </header>
 
@@ -376,7 +349,7 @@
             <div class="field-row" style="margin-bottom: 10px;">
                 <div>
                     <label>New trip name</label>
-                    <input id="new-trip-name" placeholder="e.g. Japan 2026" />
+                    <input id="new-trip-name" placeholder="e.g. Kyoto 2026" />
                 </div>
                 <div style="flex: 0 0 auto; align-self: flex-end;">
                     <button class="primary" id="add-trip-btn">Add trip</button>
@@ -404,7 +377,7 @@
             <div class="field-row" style="margin-bottom: 10px;">
                 <div>
                     <label>New day label</label>
-                    <input id="new-day-label" placeholder="Day 1 · Tokyo" />
+                    <input id="new-day-label" placeholder="Day 4 · Kyoto" />
                 </div>
                 <div style="flex: 0 0 auto; align-self: flex-end;">
                     <button class="primary" id="add-day-btn">Add day</button>
@@ -444,7 +417,7 @@
             <div class="section-footer">
                 <div class="sync-indicator" id="sync-indicator">
                     <span class="dot"></span>
-                    <span id="sync-text">Synced</span>
+                    <span id="sync-text">Local only</span>
                 </div>
                 <div class="small" id="last-updated-text">Last updated: –</div>
             </div>
@@ -452,57 +425,243 @@
     </main>
 </div>
 
-<script>
-    // --- Shared storage key (same across all devices) ---
-    const SHARED_KEY = "trip-planner-shared-v1";
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
 
-    // --- State shape ---
-    // sections = { trips: [ { id, name, days: [ { id, label, entries: [ { id, time, title, category, location, notes } ] } ] } ] }
-    let sections = {
-        trips: []
+<script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB3iogR7d8D-yFNQuuJ1_FjmsvwCrafldI",
+      authDomain: "dayplanner-dea19.firebaseapp.com",
+      projectId: "dayplanner-dea19",
+      storageBucket: "dayplanner-dea19.firebasestorage.app",
+      messagingSenderId: "208314336631",
+      appId: "1:208314336631:web:a9084375b97594cb860d72",
+      measurementId: "G-XJFHPBD0TR"
     };
 
-    let currentTripId = null;
-    let currentDayId = null;
+    let app = null;
+    let db = null;
+    let analytics = null;
+    let firestoreReady = false;
 
-    // --- Helpers ---
+    function setStatus(ok, text) {
+        const statusText = document.getElementById("status-text");
+        const statusDot = document.querySelector(".status-dot");
+        const syncText = document.getElementById("sync-text");
+        const syncIndicator = document.getElementById("sync-indicator");
+
+        statusText.textContent = text;
+        syncText.textContent = ok ? "Synced" : "Local only";
+        syncIndicator.classList.toggle("ok", ok);
+
+        statusDot.style.background = ok ? "#22c55e" : "#f97373";
+        statusDot.style.boxShadow = ok
+            ? "0 0 10px rgba(34, 197, 94, 0.9)"
+            : "0 0 10px rgba(249, 115, 115, 0.9)";
+    }
+
+    try {
+        app = firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        analytics = firebase.analytics();
+        firestoreReady = true;
+        setStatus(true, "Connected · Cloud sync");
+    } catch (e) {
+        console.warn("Firebase init failed, staying local-only", e);
+        setStatus(false, "Offline · Local only");
+    }
+
+    const LOCAL_KEY = "dayplanner_sections";
+    const DOC_PATH = { collection: "plans", doc: "dayplanner" };
+
+    const initialSections = {
+        trips: [
+            {
+                id: "japan-trip",
+                name: "Japan Trip",
+                days: [
+                    {
+                        id: "day1-old-tokyo",
+                        label: "Day 1 — Old Tokyo: Temples, Towers & Matcha",
+                        entries: [
+                            {
+                                id: "d1-sensoji",
+                                time: "9:00 AM",
+                                title: "Sensō-ji Temple",
+                                category: "Temple",
+                                location: "Asakusa",
+                                notes: "Tokyo's oldest temple, founded 645 AD."
+                            },
+                            {
+                                id: "d1-asakusa-shrine",
+                                time: "9:45 AM",
+                                title: "Asakusa Shrine",
+                                category: "Shrine",
+                                location: "Asakusa",
+                                notes: "Right next door to Sensō-ji, calmer and less crowded. 15-min stop for a different vibe."
+                            },
+                            {
+                                id: "d1-suzukien",
+                                time: "11:00 AM",
+                                title: "Suzukien Asakusa",
+                                category: "Food",
+                                location: "Asakusa",
+                                notes: "Famous matcha gelato, 7 intensity levels."
+                            },
+                            {
+                                id: "d1-skytree",
+                                time: "12:30 PM",
+                                title: "Tokyo Skytree",
+                                category: "Viewpoint",
+                                location: "Sumida",
+                                notes: "Tallest tower in Japan, panoramic views."
+                            }
+                        ]
+                    },
+                    {
+                        id: "day2-zoo-arcades",
+                        label: "Day 2 — Zoo, Arcades & Night Market",
+                        entries: [
+                            {
+                                id: "d2-ueno-zoo",
+                                time: "9:00 AM",
+                                title: "Ueno Zoo",
+                                category: "Zoo",
+                                location: "Ueno",
+                                notes: "Pandas, polar bears, red pandas."
+                            },
+                            {
+                                id: "d2-kiyomizu-kannon",
+                                time: "11:00 AM",
+                                title: "Kiyomizu Kannon-dō Temple",
+                                category: "Temple",
+                                location: "Ueno Park",
+                                notes: "1632 temple modeled after Kyoto's Kiyomizu-dera, with circular 'Moon Pine'."
+                            },
+                            {
+                                id: "d2-ueno-toshogu",
+                                time: "11:30 AM",
+                                title: "Ueno Toshogu Shrine",
+                                category: "Shrine",
+                                location: "Ueno Park",
+                                notes: "Gold-leafed Edo-period shrine, built 1627, a few minutes from Kiyomizu Kannon-dō."
+                            },
+                            {
+                                id: "d2-gamers",
+                                time: "1:00 PM",
+                                title: "Akihabara Gamers",
+                                category: "Shopping",
+                                location: "Akihabara",
+                                notes: "7-floor anime/manga superstore."
+                            },
+                            {
+                                id: "d2-kanda-myojin",
+                                time: "2:00 PM",
+                                title: "Kanda Myojin Shrine",
+                                category: "Shrine",
+                                location: "Akihabara",
+                                notes: "Historic shrine popular with anime/gaming fans for tech luck blessings."
+                            },
+                            {
+                                id: "d2-taito",
+                                time: "3:00 PM",
+                                title: "TAITO Station Akihabara",
+                                category: "Arcade",
+                                location: "Akihabara",
+                                notes: "Arcade: claw machines, fighting/rhythm games."
+                            },
+                            {
+                                id: "d2-donki",
+                                time: "4:30 PM",
+                                title: "Don Quijote Akihabara",
+                                category: "Shopping",
+                                location: "Akihabara",
+                                notes: "Chaotic discount megastore, open 24 hours."
+                            },
+                            {
+                                id: "d2-ameyoko",
+                                time: "6:30 PM",
+                                title: "Ameyoko Market",
+                                category: "Market",
+                                location: "Ueno",
+                                notes: "Night market, street food."
+                            }
+                        ]
+                    },
+                    {
+                        id: "day3-harajuku-shibuya",
+                        label: "Day 3 — Harajuku & Shibuya",
+                        entries: [
+                            {
+                                id: "d3-meiji",
+                                time: "9:00 AM",
+                                title: "Meiji Jingu Shrine",
+                                category: "Shrine",
+                                location: "Harajuku",
+                                notes: ""
+                            },
+                            {
+                                id: "d3-new-balance",
+                                time: "12:00 PM",
+                                title: "New Balance Harajuku",
+                                category: "Shopping",
+                                location: "Harajuku",
+                                notes: ""
+                            },
+                            {
+                                id: "d3-free-period",
+                                time: "1:00 PM – 2:30 PM",
+                                title: "Free/split period",
+                                category: "Free time",
+                                location: "Harajuku / Cat Street",
+                                notes: "Open block for the group to split up. Reconvene at THE MATCHA TOKYO."
+                            },
+                            {
+                                id: "d3-matcha-tokyo",
+                                time: "2:45 PM",
+                                title: "THE MATCHA TOKYO Harajuku",
+                                category: "Food",
+                                location: "Harajuku",
+                                notes: ""
+                            },
+                            {
+                                id: "d3-parco",
+                                time: "4:00 PM",
+                                title: "Shibuya PARCO",
+                                category: "Shopping",
+                                location: "Shibuya",
+                                notes: ""
+                            },
+                            {
+                                id: "d3-crossing",
+                                time: "6:00 PM",
+                                title: "Shibuya Crossing",
+                                category: "Sightseeing",
+                                location: "Shibuya",
+                                notes: ""
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    };
+
+    let sections = initialSections;
+    let currentTripId = "japan-trip";
+    let currentDayId = "day1-old-tokyo";
+    let saving = false;
+
     function uid() {
         return Math.random().toString(36).slice(2) + Date.now().toString(36);
     }
 
     function nowText() {
-        const d = new Date();
-        return d.toLocaleString();
+        return new Date().toLocaleString();
     }
 
-    function getStorageBackend() {
-        // Prefer window.storage (Edge shared storage / extension) if present
-        if (window.storage && typeof window.storage.get === "function" && typeof window.storage.set === "function") {
-            return {
-                async get(key) {
-                    const res = await window.storage.get(key, true);
-                    return res && res.value ? res.value : null;
-                },
-                async set(key, value) {
-                    await window.storage.set(key, value, true);
-                }
-            };
-        }
-
-        // Fallback to localStorage (sync via storage events)
-        return {
-            async get(key) {
-                return localStorage.getItem(key);
-            },
-            async set(key, value) {
-                localStorage.setItem(key, value);
-            }
-        };
-    }
-
-    const backend = getStorageBackend();
-
-    // --- Rendering ---
     function renderTrips() {
         const list = document.getElementById("trip-list");
         list.innerHTML = "";
@@ -536,7 +695,6 @@
                 e.stopPropagation();
                 currentTripId = trip.id;
                 if (!trip.days.length) {
-                    // Ensure at least one day
                     const day = { id: uid(), label: "Day 1", entries: [] };
                     trip.days.push(day);
                 }
@@ -712,150 +870,95 @@
         renderEntries();
     }
 
-    // --- Save & load with real-time-ish sync ---
-    let lastIncomingHash = null;
-    let lastLocalHash = null;
-    let syncing = false;
-
-    async function loadSections(initial = false) {
+    function loadFromLocal() {
         try {
-            const raw = await backend.get(SHARED_KEY);
-            if (!raw) {
-                if (initial) {
-                    sections = { trips: [] };
-                    currentTripId = null;
-                    currentDayId = null;
-                    renderAll();
-                }
-                return;
-            }
-
+            const raw = localStorage.getItem(LOCAL_KEY);
+            if (!raw) return false;
             const parsed = JSON.parse(raw);
-            const incomingHash = JSON.stringify(parsed);
-
-            if (incomingHash !== lastIncomingHash) {
-                sections = parsed;
-                lastIncomingHash = incomingHash;
-                lastLocalHash = incomingHash;
-                renderAll();
-                document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
-                setSyncState(true, "Updated from shared");
+            sections = parsed;
+            if (!sections.trips.length) {
+                sections = initialSections;
             }
+            currentTripId = sections.trips[0].id;
+            currentDayId = sections.trips[0].days[0].id;
+            renderAll();
+            document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
+            return true;
         } catch (e) {
-            console.error("Failed to load shared data", e);
-            setSyncState(false, "Load error");
+            console.error("Local load failed", e);
+            return false;
+        }
+    }
+
+    async function loadFromCloud() {
+        if (!firestoreReady) return;
+        try {
+            const docRef = db.collection(DOC_PATH.collection).doc(DOC_PATH.doc);
+            const snap = await docRef.get();
+            if (snap.exists) {
+                const data = snap.data();
+                sections = data.sections || initialSections;
+            } else {
+                sections = initialSections;
+                await docRef.set({ sections });
+            }
+            currentTripId = sections.trips[0].id;
+            currentDayId = sections.trips[0].days[0].id;
+            renderAll();
+            localStorage.setItem(LOCAL_KEY, JSON.stringify(sections));
+            document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
+            setStatus(true, "Connected · Cloud sync");
+        } catch (e) {
+            console.error("Cloud load failed", e);
+            setStatus(false, "Offline · Local only");
         }
     }
 
     async function saveSections() {
+        saving = true;
         try {
-            syncing = true;
-            setSyncState(true, "Saving…");
-
-            // Fetch latest shared version first to avoid overwriting
-            const raw = await backend.get(SHARED_KEY);
-            let latest = sections;
-
-            if (raw) {
-                try {
-                    const parsed = JSON.parse(raw);
-                    // Simple overwrite: we assume one active editor at a time.
-                    // If you want conflict resolution, you’d merge here.
-                    latest = parsed;
-                } catch {
-                    // ignore parse error, keep local
-                }
-            }
-
-            // Overwrite with our local state (single-writer model)
-            latest = sections;
-
-            const payload = JSON.stringify(latest);
-            await backend.set(SHARED_KEY, payload);
-
-            lastIncomingHash = payload;
-            lastLocalHash = payload;
+            localStorage.setItem(LOCAL_KEY, JSON.stringify(sections));
             document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
-            setSyncState(true, "Synced");
+
+            if (firestoreReady) {
+                const docRef = db.collection(DOC_PATH.collection).doc(DOC_PATH.doc);
+                await docRef.set({ sections });
+                setStatus(true, "Connected · Cloud sync");
+            }
         } catch (e) {
-            console.error("Failed to save shared data", e);
-            setSyncState(false, "Save error");
+            console.error("Save failed", e);
+            setStatus(false, "Offline · Local only");
         } finally {
-            syncing = false;
+            saving = false;
         }
     }
 
-    function setSyncState(ok, text) {
-        const indicator = document.getElementById("sync-indicator");
-        const syncText = document.getElementById("sync-text");
-        const statusText = document.getElementById("status-text");
-        const statusDot = document.querySelector(".status-dot");
-
-        syncText.textContent = text || (ok ? "Synced" : "Offline");
-        indicator.classList.toggle("off", !ok);
-
-        statusText.textContent = ok ? "Connected · Live sync" : "Offline · Changes local only";
-        statusDot.style.background = ok ? "#22c55e" : "#f97373";
-        statusDot.style.boxShadow = ok
-            ? "0 0 10px rgba(34, 197, 94, 0.9)"
-            : "0 0 10px rgba(249, 115, 115, 0.9)";
-    }
-
-    // Polling loop for near real-time sync across devices
-    setInterval(() => {
-        if (syncing) return;
-        loadSections(false);
-    }, 2500); // every 2.5s
-
-    // LocalStorage change events (same browser, different tabs)
-    window.addEventListener("storage", (event) => {
-        if (event.key !== SHARED_KEY) return;
-        if (!event.newValue) return;
-        try {
-            const parsed = JSON.parse(event.newValue);
-            const incomingHash = JSON.stringify(parsed);
-            if (incomingHash !== lastIncomingHash) {
-                sections = parsed;
-                lastIncomingHash = incomingHash;
-                renderAll();
-                document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
-                setSyncState(true, "Updated (storage event)");
+    function subscribeCloud() {
+        if (!firestoreReady) return;
+        const docRef = db.collection(DOC_PATH.collection).doc(DOC_PATH.doc);
+        docRef.onSnapshot((snap) => {
+            if (!snap.exists) return;
+            if (saving) return;
+            try {
+                const data = snap.data();
+                const incoming = data.sections;
+                const localHash = JSON.stringify(sections);
+                const incomingHash = JSON.stringify(incoming);
+                if (incomingHash !== localHash) {
+                    sections = incoming;
+                    currentTripId = sections.trips[0].id;
+                    currentDayId = sections.trips[0].days[0].id;
+                    renderAll();
+                    localStorage.setItem(LOCAL_KEY, JSON.stringify(sections));
+                    document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
+                    setStatus(true, "Connected · Cloud sync");
+                }
+            } catch (e) {
+                console.error("Snapshot error", e);
             }
-        } catch (e) {
-            console.error("Failed to handle storage event", e);
-        }
-    });
-
-    // Optional: BroadcastChannel for same-origin tabs (more instant)
-    let bc = null;
-    try {
-        bc = new BroadcastChannel("trip-planner-channel");
-        bc.onmessage = (ev) => {
-            if (!ev.data || ev.data.type !== "update") return;
-            const incomingHash = ev.data.payload;
-            if (incomingHash !== lastIncomingHash) {
-                sections = JSON.parse(incomingHash);
-                lastIncomingHash = incomingHash;
-                renderAll();
-                document.getElementById("last-updated-text").textContent = "Last updated: " + nowText();
-                setSyncState(true, "Updated (broadcast)");
-            }
-        };
-    } catch {
-        // ignore if not supported
+        });
     }
 
-    function broadcastLocal() {
-        if (!bc) return;
-        try {
-            const payload = JSON.stringify(sections);
-            bc.postMessage({ type: "update", payload });
-        } catch {
-            // ignore
-        }
-    }
-
-    // --- Event wiring ---
     document.getElementById("add-trip-btn").addEventListener("click", () => {
         const nameInput = document.getElementById("new-trip-name");
         const name = nameInput.value.trim() || "Untitled trip";
@@ -874,7 +977,6 @@
         currentDayId = trip.days[0].id;
         renderAll();
         saveSections();
-        broadcastLocal();
     });
 
     document.getElementById("rename-trip-btn").addEventListener("click", () => {
@@ -893,7 +995,6 @@
         trip.name = name;
         renderAll();
         saveSections();
-        broadcastLocal();
     });
 
     document.getElementById("add-day-btn").addEventListener("click", () => {
@@ -913,7 +1014,6 @@
         currentDayId = day.id;
         renderAll();
         saveSections();
-        broadcastLocal();
     });
 
     document.getElementById("add-entry-btn").addEventListener("click", () => {
@@ -965,13 +1065,22 @@
 
         renderEntries();
         saveSections();
-        broadcastLocal();
     });
 
-    // --- Initial load ---
     (async function init() {
-        await loadSections(true);
-        setSyncState(true, "Synced");
+        const hadLocal = loadFromLocal();
+        if (!hadLocal && firestoreReady) {
+            await loadFromCloud();
+        } else if (!hadLocal) {
+            sections = initialSections;
+            currentTripId = sections.trips[0].id;
+            currentDayId = sections.trips[0].days[0].id;
+            renderAll();
+            saveSections();
+        }
+        if (firestoreReady) {
+            subscribeCloud();
+        }
     })();
 </script>
 </body>
